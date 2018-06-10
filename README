@@ -1,0 +1,121 @@
+###################################################
+#                                                 #
+#             HOW TO INSTALL ENG2		  #
+#                                                 #
+###################################################
+
+
+Before installation please check that you have the compiler g++ >= 4.8
+
+1)Run the following commands in egn2 folder :
+
+./install.sh
+
+source ~/.basrc
+
+This script will install NCBI blast tool, Diamond and Exonerate.
+They will be used only by egn2.
+
+
+2) Check by typing the following command and press enter :
+
+egn2
+
+you should have the following message where PATH is the directory where EGN2 is installed: 
+
+----- Usage of ENG2 -----
+
+Case 1: You do not have computed the similarity between sequences.
+/PATH/egn2 -f file.fasta -s [nucl or prot] -m [blast or diamond] -a attributes.file
+
+Case 2: You have computed the similarity between sequences.
+/PATH/egn2 -n similarity_file -a attributes.file -h header
+
+-- optional -- 
+-h header
+-d workDir
+
+3) In the folder named egn2config you find the files with the parameters for egn2 
+and similarity tools that you can modify.
+
+
+###################################################
+#                                                 #
+#              INPUT FILES FORMAT                 #
+#                                                 #
+###################################################
+
+1) file.fasta
+Fasta format file with nucleic or proteic sequences
+
+2) attributes.file
+This must be a tab delimited file containing the exact sequences name follwed by the genome name.
+e.g. :
+
+gene1	genome1
+gene2	genome1
+...	...
+geneN	genomeM
+
+3)similarity_file 
+If you have already computed the similarities between the sequence, you can give that file as an input using '-n' and 
+must give the header using '-h'. Beware you file should contain the follwing information :
+--> qseqid sseqid evalue pident qstart qend qlen sstart send slen
+The attribute file must be given along and the gene names must be the same as in the similarity file.
+
+###################################################
+#                                                 #
+#                 OUTPUT FILES                    #
+#                                                 #
+###################################################
+
+
+Main folder : egn2_filename_date_time
+
+
+subfolder "configfiles" : This folder will contain a copy of all egn2 configuration files used for your data.
+
+subfolder "networks" : This folder will contain the networks in GDF format to be used with Gephi. 
+
+			- ConnetedComponents.gdf : Contains the networks of each connected component (CC). 
+				
+				* node information : node id , sequence name, genome name, CC id
+				* edge information : percentage of identity between connected sequence
+
+			- ccNetwork.gdf : Contains the network of CCs.
+			
+				* node information : node id , CC id, Number of sequences in the CC, Number of genomes in the CC
+                                * edge information : number of similar sequences (hits) between two CCs
+
+			- GenomeCCNetwork.gdf : Contains the genomes networks showing the shared CCs between genomes.
+
+				* node information : node id, genome name
+				* edge information : number of shared CCs between two genomes
+
+			- GenomeSeqNetwork.gdf : Contains the genomes networks showing the shared sequences between genomes.
+		
+				* node information : node id, genome name, number of sequences in the genome
+                                * edge information : number of similar sequences (hits) between two genomes
+
+			- CC.info : Contains the following information for each CC :
+				
+				* CCid
+				* nodes
+				* edges
+				* connectivity
+				* meanPident	
+				* sdPident	
+				* NbGenomes
+	
+			- CC.genomeInfo : Contains a table showing the presence/absence of genomes in CCs
+
+			- CC.nodes and CC.edges: Contain respectively the node ids and edges for each CCs in a fasta like format.
+
+
+##### The following folders will be created only if you have not precomputed the similarity between sequences #####
+
+subfolder "cleanNetwork": This folder will contain the filtered and formated similiraty output. Each sequence are represented by a unique number, 
+                          all self-hits are removed and only the best hit is kept (i.e. lowest E- value) amongst multiple hits between pairs of sequences.
+
+subfolder "similarityRes": This folder will contain the raw similarity output.
+
